@@ -8,12 +8,13 @@ def csv_kontrol():
     if not os.path.exists("kullanicilar.csv"):
         with open("kullanicilar.csv", "w", newline = "", encoding = "utf-8") as f:
             yaz = csv.writer(f)
-            yaz.writerow(["Ad Soyad", "Id"])
+            yaz.writerow(["Kullanıcı", "Id"])
 
 def log_kontrol():
-    with open("log_dosyasi.csv", "w", newline = "", encoding = "utf-8") as l:
-        with open("log_dosyasi.csv", "a", newline = "", encoding = "utf-8") as l:
+    if not os.path.exists("log_dosyasi.csv"):
+        with open("log_dosyasi.csv", "w", newline = "", encoding = "utf-8") as l:
             yaz = csv.writer(l)
+            yaz.writerow(["İşlem", "Id", "Tarih"])
 
 def log_kayit(funk):
     def wrapper(adsoyad):
@@ -21,7 +22,7 @@ def log_kayit(funk):
         tarih = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         sonuc = funk(adsoyad)
         with open("log_dosyasi.csv", "a", encoding = "utf-8") as l:
-            l.write(f"Kullanıcı Kayıt Oldu: {adsoyad}, Tarih: {tarih}")
+            l.write(f"Kayıt,{id},{tarih}")
         return sonuc
     return wrapper
 
@@ -31,7 +32,7 @@ def log_sil(funk):
         tarih = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         sonuc = funk()
         with open("log_dosyasi.csv", "a", encoding = "utf-8") as l:
-            l.write(f"Kullanıcı silindi: {adsoyad}, Tarih: {tarih}")
+            l.write(f"Silme,{id},{tarih}")
         return sonuc
     return wrapper
 
@@ -40,7 +41,7 @@ def kayit(adsoyad):
     csv_kontrol()
 
     id = str(uuid.uuid1())[:8]
-    kaydet = pd.DataFrame({"Ad Soyad": [adsoyad], "Id": [id]})
+    kaydet = pd.DataFrame({"Kullanıcı": [adsoyad], "Id": [id]})
     df = pd.read_csv("kullanicilar.csv")
     df = pd.concat([df, kaydet], ignore_index = True)
     df.to_csv("kullanicilar.csv", index = False, encoding = "utf-8")
@@ -59,7 +60,7 @@ def sil():
     if id not in df["Id"].values:
         print("ID bulunamadı")
         return
-    silinen = df[df["Id"] == id]["Ad Soyad"].values[0]
+    silinen = df[df["Id"] == id]["Kullanıcı"].values[0]
     df = df[df["Id"] != id]
     df.to_csv("kullanicilar.csv", index = False, encoding = "utf-8")
     print(f"{silinen} silindi\n")
