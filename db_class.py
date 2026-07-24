@@ -34,18 +34,14 @@ class MySqlDB:
         self.__cursor.execute(sql)
         print(f"'{tablo_adi}' tablosu oluşturuldu.")
 
-    def kullanici_ekle(self, kullanici):
-        sql = "INSERT INTO kullanicilar(ad_soyad, mail, telefon, adres) values(%s,%s,%s,%s)"
-        self.__cursor.executemany(sql, kullanici)
+    def insert_record(self, tablo_adi, veri):
+        sutunlar = ", ".join(veri.keys())
+        values = tuple(veri.values())
+        placeholders = ", ".join(["%s"] * len(veri))
+        sql = f"INSERT INTO {tablo_adi}({sutunlar}) values({placeholders})"
+        self.__cursor.executemany(sql, values)
         self.__connect.commit()
-        print(f"{self.__cursor.rowcount} kullanıcı eklendi.")
 
-    def tarife_ekle(self, tarifeler):
-        sql = "INSERT INTO tarifeler(tarife, hız_mbps, ücret_azn) values(%s,%s,%s)"
-        self.__cursor.executemany(sql, tarifeler)
-        self.__connect.commit()
-        print(f"{self.__cursor.rowcount} tarife eklendi.")
-                
     def disconnect(self):
         if self.__cursor:
             self.__cursor.close()
