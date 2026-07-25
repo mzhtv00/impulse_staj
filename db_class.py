@@ -2,7 +2,7 @@ import mysql.connector
 
 
 class MySqlDB:
-    def __init__(self): # <-- database eklenebilir
+    def __init__(self):
         self.__host =  "localhost"
         self.__user = "root"
         self.__password = "root"
