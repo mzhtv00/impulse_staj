@@ -6,7 +6,7 @@ def dns_analizi(domain):
     for kayit in kayit_turleri:
         print(f"\n{kayit} Kayıtları:")
         try:
-            yanitlar = dns. resolver.resolve(domain, kayit)
+            yanitlar = dns.resolver.resolve(domain, kayit)
             for yanit in yanitlar:
                 print(f"- {yanit.to_text()}")
         except dns.resolver.NoAnswer:
